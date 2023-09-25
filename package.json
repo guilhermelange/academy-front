@@ -3,20 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@types/node": "20.6.3",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
+    "axios": "^1.5.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.2",
+    "framer-motion": "^10.16.4",
     "next": "13.5.2",
+    "nookies": "^2.5.2",
     "react": "18.2.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "18.2.0",
+    "react-icons": "^4.11.0",
+    "react-paginate": "^8.2.0",
+    "swr": "^2.2.2",
     "typescript": "5.2.2"
   }
 }
