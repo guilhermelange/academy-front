@@ -80,7 +80,7 @@ export default function Header() {
           spacing={6}>
 
           <Menu>
-            <MenuButton as={Avatar} size={'sm'}>
+            <MenuButton as={Avatar} size={'sm'} cursor={'pointer'}>
             </MenuButton>
             <MenuList border={0}>
               <MenuItem onClick={() => {router.push('profile')}}>Meus dados</MenuItem>

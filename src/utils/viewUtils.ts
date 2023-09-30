@@ -6,6 +6,9 @@ export function formatDate(date: Date): string {
     return `${day}/${month}/${year}`;
 }
 
+export function formatDateTime(date: Date): string {
+  return `${formatDate(date)} ${date.toLocaleTimeString()}`;
+}
 
 export function formatValue(value: number) {
     // Utilize toLocaleString() com opções para formatar o número em Reais

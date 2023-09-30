@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Checkbox, Container, Divider, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text, useToast } from "@chakra-ui/react"
+import { Box, Checkbox, Container, Divider, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Switch, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text, useToast } from "@chakra-ui/react"
 import { api } from "@/common/service/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -10,10 +10,26 @@ interface ProductEdit {
   params: { id: number }
 }
 
+interface studentDto {
+  id?: number,
+  name: string,
+  birth_date: string,
+  gender: string,
+  status: boolean,
+  phone: string,
+  email: string,
+  city: string,
+  uf: string,
+  cep: string,
+  street: string,
+  number: string,
+  district: string,
+}
+
 export default function Student({ params: { id } }: ProductEdit) {
   const toast = useToast();
   const router = useRouter();
-  const [student, setStudent] = useState({
+  const [student, setStudent] = useState<studentDto>({
     id: id,
     name: '',
     birth_date: '',
@@ -28,96 +44,129 @@ export default function Student({ params: { id } }: ProductEdit) {
     number: '',
     district: '',
   })
+  const [quiz, setQuiz] = useState({
+    health_insurance: false,
+    health_insurance_text: '',
+    other_sport: false,
+    other_sport_text: '',
+    why_do: [] as number[],
+    why_do_text: '',
+    how_know: [] as number[],
+    how_know_text: ''
+  });
 
   useEffect(() => {
     if (id > 0) {
       api.get(`/student/${id}`).then(item => {
         const studentData = item.data;
-        setStudent({ ...studentData })
+        setStudent({ ...studentData, birth_date: studentData?.birth_date.substring(0, 10) })
+
+        if (studentData?.quiz) {
+          const quizData = JSON.parse(studentData.quiz)
+          setQuiz(quizData);
+        }
       })
     }
   }, [])
 
+  const question1Options = [
+    { id: 1, name: 'Aprender a nadar' },
+    { id: 2, name: 'Bronquite' },
+    { id: 3, name: 'Coluna' },
+    { id: 4, name: 'Obesidade' },
+    { id: 5, name: 'Treinar' },
+    { id: 6, name: 'Manter a forma' },
+    { id: 7, name: 'Gestante' },
+    { id: 8, name: 'Conselho médico' },
+    { id: 9, name: 'Outro' },
+  ]
+
+  const question2Options = [
+    { id: 1, name: 'Jornal' },
+    { id: 2, name: 'Placa' },
+    { id: 3, name: 'Cartaz' },
+    { id: 4, name: 'Panfleto' },
+    { id: 5, name: 'Amigos' },
+    { id: 6, name: 'Outdoor' },
+    { id: 7, name: 'Internet' },
+    { id: 8, name: 'Passando em Frente' },
+    { id: 9, name: 'Outros' },
+  ]
+
   const handleReturn = async () => { router.push("/student") }
 
   const handleUpdate = async () => {
-    // api.put(`/product/${id}`, {
-    //   name: product.name,
-    //   description: product.description,
-    //   value: product.value,
-    //   type: product.type
-    // })
-    //   .then(e => {
-    //     toast({
-    //       title: 'Produto atualizado com sucesso!',
-    //       status: 'success',
-    //       duration: 2000,
-    //       isClosable: true,
-    //     })
-    //     handleReturn();
-    //   })
-    //   .catch(e => {
-    //     toast({
-    //       title: 'Algo deu errado!',
-    //       status: 'error',
-    //       duration: 2000,
-    //       description: e.response?.data?.message || 'Erro interno',
-    //       isClosable: true,
-    //     })
-    //   });
+    console.log(JSON.stringify(quiz))
+    api.put(`/student/${id}`, { ...student, quiz: JSON.stringify(quiz) })
+      .then(e => {
+        toast({
+          title: 'Aluno atualizado com sucesso!',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        })
+        handleReturn();
+      })
+      .catch(e => {
+        toast({
+          title: 'Algo deu errado!',
+          status: 'error',
+          duration: 2000,
+          description: e.response?.data?.message || 'Erro interno',
+          isClosable: true,
+        })
+      });
   }
 
   const handleCreate = async () => {
-    // api.post(`/product`, {
-    //   name: product.name,
-    //   description: product.description,
-    //   value: product.value,
-    //   type: product.type
-    // })
-    //   .then(e => {
-    //     toast({
-    //       title: `Funcionário ${e.data?.id} criado com sucesso!`,
-    //       status: 'success',
-    //       duration: 2000,
-    //       isClosable: true,
-    //     })
-    //     handleReturn();
-    //   })
-    //   .catch(e => {
-    //     toast({
-    //       title: 'Algo deu errado!',
-    //       status: 'error',
-    //       duration: 2000,
-    //       description: e.response?.data?.message || 'Erro interno',
-    //       isClosable: true,
-    //     })
-    //   });
+    const newObject = { ...student, quiz: JSON.stringify(quiz) };
+    delete newObject.id;
+
+    api.post(`/student`, newObject)
+      .then(e => {
+        toast({
+          title: `Aluno ${e.data?.id} criado com sucesso!`,
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        })
+        handleReturn();
+      })
+      .catch(e => {
+        toast({
+          title: 'Algo deu errado!',
+          status: 'error',
+          duration: 2000,
+          description: e.response?.data?.message || 'Erro interno',
+          isClosable: true,
+        })
+      });
   }
 
   const handleDelete = async () => {
-    // api.delete(`/product/${id}`)
-    //   .then(e => {
-    //     toast({
-    //       title: 'Produto deletado com sucesso!',
-    //       status: 'success',
-    //       duration: 2000,
-    //       isClosable: true,
-    //     })
-    //     handleReturn();
-    //   })
-    //   .catch(e => {
-    //     toast({
-    //       title: 'Algo deu errado!',
-    //       status: 'error',
-    //       duration: 2000,
-    //       description: e.response?.data?.message || 'Erro interno',
-    //       isClosable: true,
-    //     })
-    //   });
+    api.delete(`/student/${id}`)
+      .then(e => {
+        toast({
+          title: 'Aluno deletado com sucesso!',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        })
+        handleReturn();
+      })
+      .catch(e => {
+        toast({
+          title: 'Algo deu errado!',
+          status: 'error',
+          duration: 2000,
+          description: e.response?.data?.message || 'Erro interno',
+          isClosable: true,
+        })
+      });
   }
 
   return (
-    <Container maxW="container.sm" py={8}>
+    <Container maxW="container.md" py={8}>
       <Tabs variant='unstyled'>
         <TabList mb='1em'>
           <Tab _selected={{ fontWeight: 'bold' }}>Dados Pessoais</Tab>
@@ -130,29 +179,22 @@ export default function Student({ params: { id } }: ProductEdit) {
           borderRadius="1px"
         />
         <TabPanels>
-          <TabPanel>
+          <TabPanel >
             <Box display="flex" flexDirection={{ base: 'column', md: 'row' }}>
               <Box flex="1" mr={{ md: 4 }}>
                 <Flex justifyContent={'space-between'}>
-                  {id > 0 &&
-                    <>
-                      <FormControl mb={4} mr="5%" minW={'85%'}>
-                        <FormLabel htmlFor="id">ID</FormLabel>
-                        <Input colorScheme={'blackAlpha'} id="id" name="id" placeholder="ID" isReadOnly value={id} />
-                      </FormControl>
-                      <FormControl mb={4} >
-                        <FormLabel htmlFor="status">Status</FormLabel>
-                        <Checkbox id="status" name="status" placeholder="Status" isChecked={student.status}
-                          borderColor={'black'}
-                          onChange={e => { setStudent({ ...student, status: !student.status }) }}></Checkbox>
-                      </FormControl>
-                    </>}
+                  <FormControl mb={4} mr="5%" minW={'85%'}>
+                    <FormLabel htmlFor="name">Nome</FormLabel>
+                    <Input id="name" name="name" placeholder="Nome" value={student?.name}
+                      onChange={e => { setStudent({ ...student, name: e.target.value }) }} />
+                  </FormControl>
+                  <FormControl mb={4} >
+                    <FormLabel htmlFor="status">Status</FormLabel>
+                    <Checkbox id="status" name="status" placeholder="Status" isChecked={student.status}
+                      borderColor={'black'}
+                      onChange={e => { setStudent({ ...student, status: !student.status }) }}></Checkbox>
+                  </FormControl>
                 </Flex>
-                <FormControl mb={4}>
-                  <FormLabel htmlFor="name">Nome</FormLabel>
-                  <Input id="name" name="name" placeholder="Nome" value={student?.name}
-                    onChange={e => { setStudent({ ...student, name: e.target.value }) }} />
-                </FormControl>
                 <Flex justifyContent={'space-between'}>
                   <FormControl mb={4} mr="3%">
                     <FormLabel htmlFor="birth_date">Data de Nascimento</FormLabel>
@@ -221,21 +263,90 @@ export default function Student({ params: { id } }: ProductEdit) {
                     </Flex>
                   </Box>
                 </FormControl>
-                <FormControl mb={4}>
-                  <Stack direction={'row'}>
-                    <CustomButton callback={id > 0 ? handleUpdate : handleCreate}>Confirmar</CustomButton>
-                    <CustomButton callback={handleDelete} variant="outline" colorSchema="red">Deletar</CustomButton>
-                    <CustomButton variant="outline" colorSchema="blackAlpha" callback={handleReturn}>Voltar</CustomButton>
-                  </Stack>
-                </FormControl>
               </Box>
             </Box>
           </TabPanel>
           <TabPanel>
+            <Box display="flex" flexDirection={{ base: 'column', md: 'row' }} maxW={"container.sm"}>
+              <Box flex="1" mr={{ md: 4 }}>
+                <FormControl mb={4} display={'flex'}>
+                  <FormLabel htmlFor="student">Aluno:</FormLabel>
+                  {student?.name}
+                </FormControl>
 
+                <FormControl display='flex' alignItems='center' mb={4}>
+                  <FormLabel htmlFor='planosaude' minW={'28%'} >
+                    Possui plano de Saúde?
+                  </FormLabel>
+                  <Switch id='planosaude' mr={4} isChecked={quiz?.health_insurance}
+                    onChange={e => { setQuiz({ ...quiz, health_insurance: !quiz.health_insurance }) }} />
+                  {quiz.health_insurance &&
+                    <Input id="planosaude_text" name="planosaude_text" placeholder="" value={quiz?.health_insurance_text}
+                      onChange={e => { setQuiz({ ...quiz, health_insurance_text: e.target.value }) }} />}
+                </FormControl>
+                <FormControl display='flex' alignItems='center' mb={4}>
+                  <FormLabel htmlFor='praticaesporte' minW={'28%'} >
+                    Pratica outro esporte?
+                  </FormLabel>
+                  <Switch id='praticaesporte' mr={4} isChecked={quiz?.other_sport}
+                    onChange={e => { setQuiz({ ...quiz, other_sport: !quiz.other_sport }) }} />
+                  {quiz.other_sport &&
+                    <Input id="praticaesporte_text" name="praticaesporte_text" placeholder="" value={quiz?.other_sport_text}
+                      onChange={e => { setQuiz({ ...quiz, other_sport_text: e.target.value }) }} />}
+                </FormControl>
+                <FormLabel htmlFor='porque' minW={'31%'} >
+                  Porque faz academia?
+                </FormLabel>
+                <FormControl display='flex' alignItems='center' mb={4} justifyContent={'flex-start'} flexWrap={'wrap'} gap={4}>
+                  {quiz?.why_do && question1Options.map(item => (
+                    <Checkbox key={item.id} borderColor={'black'} isChecked={quiz?.why_do.includes(item?.id)}
+                      onChange={e => {
+                        setQuiz({
+                          ...quiz, why_do: quiz?.why_do.includes(item?.id) ?
+                            quiz?.why_do.filter(aux => aux !== item.id) :
+                            [...quiz?.why_do, item.id]
+                        })
+                      }}
+                    >
+                      {item.name}
+                    </Checkbox>
+                  ))}
+                  {quiz?.why_do.includes(9) &&
+                    <Input id="porque" name="porque_text" placeholder="" value={quiz?.why_do_text}
+                      onChange={e => { setQuiz({ ...quiz, why_do_text: e.target.value }) }} />}
+                </FormControl>
+                <FormLabel htmlFor='como' minW={'31%'} >
+                  Como soube da academia?
+                </FormLabel>
+                <FormControl display='flex' alignItems='center' mb={4} justifyContent={'flex-start'} flexWrap={'wrap'} gap={4}>
+                  {question2Options.map(item => (
+                    <Checkbox key={item.id} borderColor={'black'} isChecked={quiz?.how_know.includes(item?.id)}
+                      onChange={e => {
+                        setQuiz({
+                          ...quiz, how_know: quiz?.how_know.includes(item?.id) ?
+                            quiz?.how_know.filter(aux => aux !== item.id) :
+                            [...quiz?.how_know, item.id]
+                        })
+                      }}>
+                      {item.name}
+                    </Checkbox>
+                  ))}
+                  {quiz?.how_know.includes(9) && <Input id="como" name="como_text" placeholder="" value={quiz?.how_know_text}
+                    onChange={e => { setQuiz({ ...quiz, how_know_text: e.target.value }) }} />}
+
+                </FormControl>
+              </Box>
+            </Box>
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <FormControl mb={4}>
+        <Stack direction={'row'}>
+          <CustomButton callback={id > 0 ? handleUpdate : handleCreate}>Confirmar</CustomButton>
+          {id > 0 && <CustomButton callback={handleDelete} variant="outline" colorSchema="red">Deletar</CustomButton>}
+          <CustomButton variant="outline" colorSchema="blackAlpha" callback={handleReturn}>Voltar</CustomButton>
+        </Stack>
+      </FormControl>
     </Container>
   )
 }

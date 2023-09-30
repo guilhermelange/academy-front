@@ -136,7 +136,7 @@ export default function Professional({ params: { id } }: ProfessionalEdit) {
           <FormControl mb={4}>
             <Stack direction={'row'}>
               <CustomButton callback={id > 0 ? handleUpdate : handleCreate}>Confirmar</CustomButton>
-              <CustomButton callback={handleDelete} variant="outline" colorSchema="red">Deletar</CustomButton>
+              {id > 0 && <CustomButton callback={handleDelete} variant="outline" colorSchema="red">Deletar</CustomButton>}
               <CustomButton variant="outline" colorSchema="blackAlpha" callback={handleReturn}>Voltar</CustomButton>
             </Stack>
           </FormControl>

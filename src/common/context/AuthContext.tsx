@@ -32,16 +32,15 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User>({} as User);
-    const isAuthenticated = !!user.id;
+    const isAuthenticated = !!user?.id;
     const router = useRouter();
-
 
     async function signIn({ email, password }: SignInCredentials) {
         
         const response = await api.post("/auth", { email, password});
-        const { token, user } = response.data;
+        const { token, user: loggedUser } = response.data;
 
-        const loggedUser = user
+        console.log(loggedUser)
         setUser(loggedUser)
 
         setCookie(undefined, 'nextauth.token', token, {
