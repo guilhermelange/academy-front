@@ -16,24 +16,24 @@ export default function Product() {
   const router = useRouter();
   const { mutate } = useSWRConfig()
 
-  const { data: products, error, isLoading }: swrResponse = useSWR("/product", api);
+  const { data: activities, error, isLoading }: swrResponse = useSWR("/activity", api);
 
   if (error) return <div></div>
   if (isLoading) return <Loading></Loading>
 
-  const { ContentPagination, currentData } = Pagination({ data: products.data, page });
+  const { ContentPagination, currentData } = Pagination({ data: activities.data, page });
 
   const handleEdit = (id: any) => {
-    router.push(`product/${id}`)
+    router.push(`activity/${id}`)
   }
 
   const handleDelete = async (id: any) => {
-    await api.delete(`/product/${id}`);
-    mutate("/product");
+    await api.delete(`/activity/${id}`);
+    mutate("/activity");
   }
 
-  const handleNewProduct = async () => {
-    router.push('/product/0');
+  const handleNew = async () => {
+    router.push('/activity/0');
   }
 
   return (
@@ -41,7 +41,7 @@ export default function Product() {
       <Box textAlign="center" fontSize="xl">
         <Stack direction={'row'} verticalAlign={'center'} w={'full'} justifyContent={'space-between'}>
           <Heading size="lg">
-            Produtos
+            Atividades
           </Heading>
           <IconButton
             variant="outline"
@@ -49,7 +49,7 @@ export default function Product() {
             aria-label="Add item"
             icon={<FaPlus />}
             ml="2"
-            onClick={handleNewProduct}
+            onClick={handleNew}
           />
         </Stack>
 
@@ -60,20 +60,14 @@ export default function Product() {
                 <Tr>
                   <Th>Id</Th>
                   <Th>Nome</Th>
-                  <Th>Descrição</Th>
-                  <Th>Valor</Th>
-                  <Th>Tipo</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {currentData && currentData.map((product: any) => (
-                  <Tr key={product.id}>
-                    <Td>{product.id}</Td>
-                    <Td>{product.name}</Td>
-                    <Td>{product.description}</Td>
-                    <Td>{formatValue(Number.parseFloat(product.value))}</Td>
-                    <Td>{product.type == 'bar' ? 'Bar' : 'Loja'}</Td>
+                {currentData && currentData.map((activity: any) => (
+                  <Tr key={activity.id}>
+                    <Td>{activity.id}</Td>
+                    <Td>{activity.name}</Td>
                     <Td textAlign={'right'}>
                       <IconButton
                         variant="outline"
@@ -81,7 +75,7 @@ export default function Product() {
                         aria-label="Edit item"
                         icon={<FaRegEdit />}
                         ml="2"
-                        onClick={() => {handleEdit(product.id)}}
+                        onClick={() => {handleEdit(activity.id)}}
                       />
                       <IconButton
                         variant="outline"
@@ -89,7 +83,7 @@ export default function Product() {
                         aria-label="Remove item"
                         icon={<FaTrash />}
                         ml="2"
-                        onClick={() => {handleDelete(product.id)}}
+                        onClick={() => {handleDelete(activity.id)}}
                       />
                     </Td>
                   </Tr>

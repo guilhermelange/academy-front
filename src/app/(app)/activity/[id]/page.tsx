@@ -6,42 +6,36 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/button";
 
-interface ProductEdit {
+interface ActivityEdit {
   params: { id: number }
 }
 
-export default function Product({ params: { id } }: ProductEdit) {
+export default function Activity({ params: { id } }: ActivityEdit) {
   const toast = useToast();
   const router = useRouter();
-  const [product, setProduct] = useState({
+  const [activity, setActivity] = useState({
     id: id,
-    name: '',
-    description: '',
-    value: 0.0,
-    type: 'bar'
+    name: ''
   })
 
   useEffect(() => {
     if (id > 0) {
-      api.get(`/product/${id}`).then(item => {
-        const productData = item.data;
-        setProduct({ ...productData })
+      api.get(`/activity/${id}`).then(item => {
+        const activityData = item.data;
+        setActivity({ ...activityData })
       })
     }
   }, [])
 
-  const handleReturn = async () => { router.push("/product") }
+  const handleReturn = async () => { router.push("/activity") }
 
   const handleUpdate = async () => {
-    api.put(`/product/${id}`, {
-      name: product.name,
-      description: product.description,
-      value: product.value,
-      type: product.type
+    api.put(`/activity/${id}`, {
+      name: activity.name,
     })
       .then(e => {
         toast({
-          title: 'Produto atualizado com sucesso!',
+          title: 'Atividade atualizado com sucesso!',
           status: 'success',
           duration: 2000,
           isClosable: true,
@@ -60,15 +54,12 @@ export default function Product({ params: { id } }: ProductEdit) {
   }
 
   const handleCreate = async () => {
-    api.post(`/product`, {
-      name: product.name,
-      description: product.description,
-      value: product.value,
-      type: product.type
+    api.post(`/activity`, {
+      name: activity.name,
     })
       .then(e => {
         toast({
-          title: `Funcionário ${e.data?.id} criado com sucesso!`,
+          title: `Atividade ${e.data?.id} criada com sucesso!`,
           status: 'success',
           duration: 2000,
           isClosable: true,
@@ -87,10 +78,10 @@ export default function Product({ params: { id } }: ProductEdit) {
   }
 
   const handleDelete = async () => {
-    api.delete(`/product/${id}`)
+    api.delete(`/activity/${id}`)
       .then(e => {
         toast({
-          title: 'Produto deletado com sucesso!',
+          title: 'Atividade deletada com sucesso!',
           status: 'success',
           duration: 2000,
           isClosable: true,
@@ -122,25 +113,8 @@ export default function Product({ params: { id } }: ProductEdit) {
             </FormControl>}
           <FormControl mb={4}>
             <FormLabel htmlFor="name">Nome</FormLabel>
-            <Input id="name" name="name" placeholder="Nome" value={product?.name}
-              onChange={e => { setProduct({ ...product, name: e.target.value }) }} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="description">Descrição</FormLabel>
-            <Input id="description" name="description" placeholder="Descrição" value={product?.description}
-              onChange={e => { setProduct({ ...product, description: e.target.value }) }} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="value">Valor</FormLabel>
-            <Input id="value" name="value" type="number" placeholder="Valor" value={product?.value}
-              onChange={e => { setProduct({ ...product, value: +e.target.value }) }} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel htmlFor="type">Tipo</FormLabel>
-            <Select placeholder='Selecione o Tipo' value={product.type} onChange={e => { setProduct({ ...product, type: e.target.value }) }}>
-              <option value='store'>Loja</option>
-              <option value='bar'>Bar</option>
-            </Select>
+            <Input id="name" name="name" placeholder="Nome" value={activity?.name}
+              onChange={e => { setActivity({ ...activity, name: e.target.value }) }} />
           </FormControl>
           <FormControl mb={4}>
             <Stack direction={'row'}>

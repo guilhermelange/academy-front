@@ -253,6 +253,10 @@ const NAV_ITEMS: Array<NavItem> = [
         href: '/student',
       },
       {
+        label: 'Atividades',
+        href: '/activity',
+      },
+      {
         label: 'Funcionários',
         href: '/professional',
       },
