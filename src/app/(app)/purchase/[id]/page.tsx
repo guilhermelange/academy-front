@@ -304,7 +304,7 @@ export default function Purchase({ params: { id } }: PurchaseEdit) {
                       <Tr key={product.id}>
                         <Td>{product.name}</Td>
                         <Td>{product.amount}</Td>
-                        <Td>{product.amount * product.value}</Td>
+                        <Td>{formatValue(+(product.amount * product.value))}</Td>
                         {!(id > 0) && <Td textAlign={'right'}>
                           <IconButton
                             variant={'outline'}
