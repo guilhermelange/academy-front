@@ -1,10 +1,11 @@
 'use client'
 
-import { Box, Checkbox, Container, Divider, Flex, FormControl, FormLabel, Heading, Input, Select, Stack, Switch, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs, Text, useToast } from "@chakra-ui/react"
+import { Box, Checkbox, Container, Divider, Flex, FormControl, FormLabel, Heading, IconButton, Input, Select, Stack, Switch, Tab, TabIndicator, TabList, TabPanel, TabPanels, Table, TableContainer, Tabs, Text, Th, Thead, Tr, VStack, useToast } from "@chakra-ui/react"
 import { api } from "@/common/service/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/button";
+import { FaPlus } from "react-icons/fa";
 
 interface ProductEdit {
   params: { id: number }
@@ -171,6 +172,7 @@ export default function Student({ params: { id } }: ProductEdit) {
         <TabList mb='1em'>
           <Tab _selected={{ fontWeight: 'bold' }}>Dados Pessoais</Tab>
           <Tab _selected={{ fontWeight: 'bold' }}>Questionário</Tab>
+          <Tab _selected={{ fontWeight: 'bold' }}>Matrículas</Tab>
         </TabList>
         <TabIndicator
           mt="-10.5px"
@@ -335,6 +337,27 @@ export default function Student({ params: { id } }: ProductEdit) {
                     onChange={e => { setQuiz({ ...quiz, how_know_text: e.target.value }) }} />}
 
                 </FormControl>
+              </Box>
+            </Box>
+          </TabPanel>
+          <TabPanel>
+            <Box display="flex" flexDirection={{ base: 'column', md: 'row' }} maxW={"container.lg"}>
+              <Box textAlign="center" fontSize="xl">
+                <Stack direction={'row'} verticalAlign={'center'} w={'full'} justifyContent={'space-between'}>
+                  <Heading size="lg">
+                    Matrículas
+                  </Heading>
+                  <IconButton
+                    variant="outline"
+                    colorScheme="green"
+                    aria-label="Add item"
+                    icon={<FaPlus />}
+                    ml="2"
+                    onClick={undefined}
+                  />
+                </Stack>
+
+                
               </Box>
             </Box>
           </TabPanel>

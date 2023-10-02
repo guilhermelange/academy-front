@@ -83,7 +83,7 @@ export default function Header() {
             <MenuButton as={Avatar} size={'sm'} cursor={'pointer'}>
             </MenuButton>
             <MenuList border={0}>
-              <MenuItem onClick={() => {router.push('profile')}}>Meus dados</MenuItem>
+              <MenuItem onClick={() => {router.push('/profile')}}>Meus dados</MenuItem>
               <MenuItem onClick={logout}>Sair</MenuItem>
             </MenuList>
           </Menu>
@@ -267,15 +267,15 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: 'Financeiro',
+    label: 'Negócio',
     children: [
       {
-        label: 'Compras',
-        href: '#',
+        label: 'Matrícula',
+        href: '/registration',
       },
       {
-        label: 'Vendas',
-        href: '#',
+        label: 'Compras',
+        href: '/purchase',
       },
     ],
   }
