@@ -28,8 +28,8 @@ export function formatTime(date: Date) {
     }
 }
 
-  const horas = padlZero(date.getHours());
-  const minutos = padlZero(date.getMinutes());
+  const horas = padlZero(date.getUTCHours());
+  const minutos = padlZero(date.getUTCMinutes());
 
   return `${horas}:${minutos}`;
 }

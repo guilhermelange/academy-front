@@ -1,6 +1,6 @@
 'use client'
 
-import { useDisclosure, Box, Container, FormControl, FormLabel, Heading, Input, Stack, Text, useToast, Select as Select2, TableContainer, Table, Thead, Tr, Th, Tbody, Td, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button } from "@chakra-ui/react"
+import { useDisclosure, Box, Container, FormControl, FormLabel, Heading, Input, Stack, Text, useToast, Select as Select2, TableContainer, Table, Thead, Tr, Th, Tbody, Td, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Link } from "@chakra-ui/react"
 import { api } from "@/common/service/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -120,12 +120,16 @@ export default function Purchase({ params: { id } }: PurchaseEdit) {
   }
 
   useEffect(() => {
-    if (products && products.length > 0) {
-      const newValue = products.map(item => item.value * item.amount).reduce((total, current) => (total + current))
-      setPurchase({ ...purchase, value: newValue });
+    if (purchase.type == 'registration') {
     } else {
-      setPurchase({ ...purchase, value: 0 });
+      if (products && products.length > 0) {
+        const newValue = products.map(item => item.value * item.amount).reduce((total, current) => (total + current))
+        setPurchase({ ...purchase, value: newValue });
+      } else {
+        setPurchase({ ...purchase, value: 0 });
+      }
     }
+
   }, [products])
 
   let timeout: any;
@@ -229,7 +233,9 @@ export default function Purchase({ params: { id } }: PurchaseEdit) {
             </FormControl>
             {id > 0 && purchase.registration_id > 0 && <FormControl mb={4}>
               <FormLabel htmlFor="registration_id">Matrícula</FormLabel>
-              <Input id="registration_id" name="registration_id" type="number" placeholder="Matrícula" value={purchase.registration_id} isReadOnly />
+              <Link href={`/registration/${purchase.registration_id}`}>
+                <Input cursor={'pointer'} id="registration_id" name="registration_id" type="number" placeholder="Matrícula" value={purchase.registration_id} isReadOnly />
+              </Link>
             </FormControl>}
             <FormControl mb={4}>
               <FormLabel htmlFor="type">Tipo Pagamento</FormLabel>
