@@ -31,6 +31,8 @@ import {
 import { useContext } from 'react';
 import { AuthContext } from '@/common/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Image from "next/image"
+import logo from "../../public/logo.png"
 
 export default function Header() {
   const { isOpen, onToggle } = useDisclosure()
@@ -64,7 +66,12 @@ export default function Header() {
             fontFamily={'heading'}
             color={useColorModeValue('white', 'white')}>
             <Link href='/'>
-              Logo
+              <Image
+                src={ logo }
+                alt="logo"
+                width={180}
+                height={60}
+              />
             </Link>
           </Text>
 

@@ -10,6 +10,9 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 
+import Image from "next/image"
+import logo from "../../public/logo.png"
+
 export default function Footer() {
   return (
     <Box
@@ -24,13 +27,18 @@ export default function Footer() {
         py={4}
         direction={{ base: 'column', md: 'row' }}
         spacing={4}
-        justify={{ base: 'center', md: 'space-between' }}
+        justify={{ base: 'center', md: 'center' }}
         align={{ base: 'center', md: 'center' }}>
         <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
             >
-            Logo
+            <Image
+              src={ logo }
+              alt="logo"
+              width={180}
+              height={60}
+            />
           </Text>
         <Text>© {(new Date()).getUTCFullYear()} Udesc. All rights reserved</Text>
         <Stack direction={'row'} spacing={6}>

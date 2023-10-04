@@ -1,6 +1,8 @@
 'use client'
 
 import { Box, Flex, Text, useBreakpointValue, useColorModeValue } from "@chakra-ui/react";
+import Image from "next/image"
+import logo from "../../public/logo.png"
 
 export default function HeaderPublic() {
     return (
@@ -19,7 +21,12 @@ export default function HeaderPublic() {
                     textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
                     fontFamily={'heading'}
                     color={useColorModeValue('white', 'white')}>
-                    Logo
+                    <Image
+                        src={ logo }
+                        alt="logo"
+                        width={180}
+                        height={60}
+                    />
                 </Text>
             </Flex>
         </Flex>
