@@ -102,7 +102,7 @@ export default function Activity({ params: { id } }: ActivityEdit) {
   return (
     <Container maxW="container.sm" py={8}>
       <Heading size="lg" mb={4} display={'flex'}>
-        <Text>{id > 0 ? 'Editar Produto' : 'Novo Produto'}</Text>
+        <Text>{id > 0 ? 'Editar Atividade' : 'Nova Atividade'}</Text>
       </Heading>
       <Box display="flex" flexDirection={{ base: 'column', md: 'row' }}>
         <Box flex="1" mr={{ md: 4 }}>
