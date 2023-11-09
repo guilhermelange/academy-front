@@ -1,7 +1,6 @@
 'use client'
 
 import { Box, Container, SimpleGrid, Text, useBreakpointValue } from "@chakra-ui/react"
-import Image from "next/image"
 
 export default function SimpleCard() {
     const products = {data: [{

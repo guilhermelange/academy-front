@@ -4,8 +4,6 @@ import { Providers } from "../providers";
 import type { Metadata } from 'next'
 import Footer from '@/components/footer';
 import { Box, ColorModeScript } from '@chakra-ui/react';
-import { Suspense } from 'react';
-import Loading from '@/components/loading';
 import { AuthProvider } from '@/common/context/AuthContext';
 export const metadata: Metadata = {
   title: 'Academy',
