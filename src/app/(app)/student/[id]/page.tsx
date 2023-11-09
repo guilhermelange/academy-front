@@ -532,7 +532,7 @@ export default function Student({ params: { id } }: ProductEdit) {
                 {/* <Box display="flex" flexDirection={{ base: "column", md: "row" }} maxW={"container.lg"}>
                   <Box textAlign="center" fontSize="xl"></Box>
                 </Box> */}
-                <Registration userId={id}></Registration>
+                <Registration params={{userId: id}}></Registration>
               </TabPanel>
             </TabPanels>
           </Tabs>

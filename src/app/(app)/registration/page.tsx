@@ -26,7 +26,11 @@ import Pagination from "@/components/pagination";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 
-export default function Registration({ userId }: { userId?: number }) {
+interface RegistrationList {
+  params: { userId?: number };
+}
+
+export default function Registration({ params: { userId } }: RegistrationList) {
   const page = useState(0);
   const router = useRouter();
   const { mutate } = useSWRConfig();
