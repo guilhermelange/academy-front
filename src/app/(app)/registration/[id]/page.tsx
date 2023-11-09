@@ -399,6 +399,7 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
                     id="expiration"
                     name="expiration"
                     placeholder="Data de Expiração"
+                    readOnly={id > 0 ? true : false}
                     value={registration?.expiration}
                     onChange={(e) => {
                       setRegistration({ ...registration, expiration: e.target.value });

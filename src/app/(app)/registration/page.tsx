@@ -1,6 +1,21 @@
-'use client'
+"use client";
 
-import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from "@chakra-ui/react"
+import {
+  Box,
+  Container,
+  Heading,
+  IconButton,
+  Skeleton,
+  Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from "@chakra-ui/react";
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
 import { formatDate, formatTime, formatValue } from "../../../utils/viewUtils";
 import useSWR, { useSWRConfig } from "swr";
@@ -11,38 +26,38 @@ import Pagination from "@/components/pagination";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 
-export default function Product() {
+export default function Registration({ userId }: { userId?: number }) {
   const page = useState(0);
   const router = useRouter();
-  const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig();
 
-  const { data: registrations, error, isLoading }: swrResponse = useSWR("/registration", api);
+  const idUser = userId ?? 0;
+  const apiUrl = idUser > 0 ? `/registration?student_id=${idUser}` : "/registration";
+  const { data: registrations, error, isLoading }: swrResponse = useSWR(apiUrl, api);
 
-  if (error) return <div></div>
-  if (isLoading) return <Loading></Loading>
+  if (error) return <div></div>;
+  if (isLoading) return <Loading></Loading>;
 
   const { ContentPagination, currentData } = Pagination({ data: registrations.data, page });
 
   const handleEdit = (id: any) => {
-    router.push(`registration/${id}`)
-  }
+    router.push(`/registration/${id}`);
+  };
 
   const handleDelete = async (id: any) => {
     await api.delete(`/registration/${id}`);
     mutate("/registration");
-  }
+  };
 
   const handleNew = async () => {
-    router.push('/registration/0');
-  }
+    router.push("/registration/0");
+  };
 
   return (
-    <Container maxW="container.xl" py={10}>
+    <Container maxW="container.xl" py={idUser > 0 ? 0 : 10}>
       <Box textAlign="center" fontSize="xl">
-        <Stack direction={'row'} verticalAlign={'center'} w={'full'} justifyContent={'space-between'}>
-          <Heading size="lg">
-            Matrículas
-          </Heading>
+        <Stack direction={"row"} verticalAlign={"center"} w={"full"} justifyContent={"space-between"}>
+          <Heading size="lg">Matrículas</Heading>
           <IconButton
             variant="outline"
             colorScheme="green"
@@ -54,12 +69,16 @@ export default function Product() {
         </Stack>
 
         <VStack spacing={8} pt={4}>
-          <TableContainer w={'full'}>
-            <Table variant="striped" size='sm' colorScheme={'blackAlpha'}>
+          <TableContainer w={"full"}>
+            <Table variant="striped" size="sm" colorScheme={"blackAlpha"}>
               <Thead>
                 <Tr>
-                  <Th>Id</Th>
-                  <Th>Aluno</Th>
+                  {!(idUser > 0) && (
+                    <>
+                      <Th>Id</Th>
+                      <Th>Aluno</Th>
+                    </>
+                  )}
                   <Th>Atividade</Th>
                   <Th>Professor</Th>
                   <Th>Status</Th>
@@ -69,35 +88,48 @@ export default function Product() {
                 </Tr>
               </Thead>
               <Tbody>
-                {currentData && currentData.map((registration: any) => (
-                  <Tr key={registration.id}>
-                    <Td>{registration.id}</Td>
-                    <Td>{registration.student.name}</Td>
-                    <Td>{registration.activity.name}</Td>
-                    <Td>{registration.professional.name}</Td>
-                    <Td>{registration.status ? 'Ativo' : 'Inativo'}</Td>
-                    <Td>{`${formatTime(new Date(registration.start_time))} - ${formatTime(new Date(registration.end_time))}`}</Td>
-                    <Td color={((new Date(registration.expiration)) > new Date(Date.now())) ? 'green' : 'red'}>{formatDate(new Date(registration.expiration))}</Td>
-                    <Td textAlign={'right'}>
-                      <IconButton
-                        variant="outline"
-                        colorScheme="blackAlpha"
-                        aria-label="Edit item"
-                        icon={<FaRegEdit />}
-                        ml="2"
-                        onClick={() => {handleEdit(registration.id)}}
-                      />
-                      <IconButton
-                        variant="outline"
-                        colorScheme="red"
-                        aria-label="Remove item"
-                        icon={<FaTrash />}
-                        ml="2"
-                        onClick={() => {handleDelete(registration.id)}}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
+                {currentData &&
+                  currentData.map((registration: any) => (
+                    <Tr key={registration.id}>
+                      {!(idUser > 0) && (
+                        <>
+                          <Td>{registration.id}</Td>
+                          <Td>{registration.student.name}</Td>
+                        </>
+                      )}
+                      <Td>{registration.activity.name}</Td>
+                      <Td>{registration.professional.name}</Td>
+                      <Td>{registration.status ? "Ativo" : "Inativo"}</Td>
+                      <Td>{`${formatTime(new Date(registration.start_time))} - ${formatTime(
+                        new Date(registration.end_time)
+                      )}`}</Td>
+                      <Td color={new Date(registration.expiration) > new Date(Date.now()) ? "green" : "red"}>
+                        {formatDate(new Date(registration.expiration))}
+                      </Td>
+                      <Td textAlign={"right"}>
+                        <IconButton
+                          variant="outline"
+                          colorScheme="blackAlpha"
+                          aria-label="Edit item"
+                          icon={<FaRegEdit />}
+                          ml="2"
+                          onClick={() => {
+                            handleEdit(registration.id);
+                          }}
+                        />
+                        <IconButton
+                          variant="outline"
+                          colorScheme="red"
+                          aria-label="Remove item"
+                          icon={<FaTrash />}
+                          ml="2"
+                          onClick={() => {
+                            handleDelete(registration.id);
+                          }}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -105,5 +137,5 @@ export default function Product() {
         </VStack>
       </Box>
     </Container>
-  )
+  );
 }

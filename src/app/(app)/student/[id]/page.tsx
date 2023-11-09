@@ -34,6 +34,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/button";
 import Loading from "@/components/loading";
+import Registration from "../../registration/page";
 
 interface ProductEdit {
   params: { id: number };
@@ -212,7 +213,7 @@ export default function Student({ params: { id } }: ProductEdit) {
             <TabList mb="1em">
               <Tab _selected={{ fontWeight: "bold" }}>Dados Pessoais</Tab>
               <Tab _selected={{ fontWeight: "bold" }}>Questionário</Tab>
-              {/* <Tab _selected={{ fontWeight: 'bold' }}>Matrículas</Tab> */}
+              {id > 0 && <Tab _selected={{ fontWeight: 'bold' }}>Matrícula</Tab>}
             </TabList>
             <TabIndicator mt="-10.5px" height="2px" bg="black" borderRadius="1px" />
             <TabPanels>
@@ -528,9 +529,10 @@ export default function Student({ params: { id } }: ProductEdit) {
                 </Box>
               </TabPanel>
               <TabPanel>
-                <Box display="flex" flexDirection={{ base: "column", md: "row" }} maxW={"container.lg"}>
+                {/* <Box display="flex" flexDirection={{ base: "column", md: "row" }} maxW={"container.lg"}>
                   <Box textAlign="center" fontSize="xl"></Box>
-                </Box>
+                </Box> */}
+                <Registration userId={id}></Registration>
               </TabPanel>
             </TabPanels>
           </Tabs>
