@@ -93,7 +93,7 @@ export default function Registration({ params: { userId } }: RegistrationList) {
               </Thead>
               <Tbody>
                 {currentData &&
-                  currentData.map((registration: any) => (
+                  currentData.sort((a: any, b: any) => b.id - a.id).map((registration: any) => (
                     <Tr key={registration.id}>
                       {!(idUser > 0) && (
                         <>

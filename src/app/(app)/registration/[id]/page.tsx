@@ -31,6 +31,12 @@ import {
   Td,
   Link,
   IconButton,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  TabIndicator,
 } from "@chakra-ui/react";
 import { api } from "@/common/service/api";
 import { useEffect, useState } from "react";
@@ -40,6 +46,7 @@ import { Select } from "chakra-react-select";
 import { formatDate, formatValue } from "@/utils/viewUtils";
 import { TbExternalLink } from "react-icons/tb";
 import Loading from "@/components/loading";
+import { FaTrash } from "react-icons/fa";
 
 interface RegistrationEdit {
   params: { id: number };
@@ -63,6 +70,10 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
   const [activities, setActivities] = useState([] as any[]);
   const [professionals, setProfessionals] = useState([] as any[]);
   const [purchases, setPurchases] = useState([] as any[]);
+  const [presences, setPresences] = useState([] as any[]);
+  const [presenceState, setPresenceState] = useState({
+    presence_date: ""
+  })
   const [purchase, setPurchase] = useState({
     amount: 1,
     payment_type: "",
@@ -87,6 +98,7 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenPresence, onOpen: onOpenPresence, onClose: onClosePresence } = useDisclosure();
 
   useEffect(() => {
     if (id > 0) {
@@ -101,6 +113,7 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
         });
 
         setPurchases(registrationData.purchases);
+        setPresences(registrationData.presence);
 
         setAllDays(naturalAllDays.filter((item) => registrationData.day_of_week.includes(item.value)));
         setLoading(false);
@@ -248,6 +261,37 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
       });
   };
 
+  const handlePresence = async () => {
+    api
+      .post(`/presence`, {
+        registration_id: id,
+        presence_date: presenceState.presence_date
+      })
+      .then((e) => {
+        toast({
+          title: "Presença adicionada com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+        
+        setPresences([...presences, {
+          id: e.data.id,
+          registration_id: id,
+          presence_date: e.data.presence_date.substring(0, 10)
+        }])
+      })
+      .catch((e) => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      });
+  };
+
   let timeout: any;
   function handleLoadStudent(inputValue: any) {
     clearTimeout(timeout);
@@ -267,6 +311,28 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
         });
       }
     }, 500);
+  }
+
+  function handleClickDeletePresence(itemId: number){
+    api.delete(`/presence/${itemId}`)
+      .then(item => {
+        setPresences(presences.filter(item => item.id != itemId));
+        toast({
+          title: "Presença removida com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch(e => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      })
   }
 
   return (
@@ -413,47 +479,93 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
                       <Divider></Divider>
                     </FormControl>
                     <FormControl mb={8}>
-                      <FormLabel>Compras Relacionadas</FormLabel>
-                      <TableContainer w={"full"}>
-                        <Table variant="striped" size="sm" colorScheme={"blackAlpha"}>
-                          <Thead>
-                            <Tr>
-                              <Th>Valor</Th>
-                              <Th>Status</Th>
-                              <Th>Data Criação</Th>
-                              <Th></Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {purchases &&
-                              purchases?.map((item: any) => (
-                                <Tr key={item.id}>
-                                  <Td>{formatValue(+item.value)}</Td>
-                                  <Td>
-                                    {item.status == "pending"
-                                      ? "Pendente"
-                                      : item.status == "paid"
-                                      ? "Pago"
-                                      : "Cancelado"}
-                                  </Td>
-                                  <Td>{formatDate(new Date(item.creation_date))}</Td>
-                                  <Td>
-                                    <Link href={`/purchase/${item.id}`}>
-                                      <IconButton
-                                        variant="outline"
-                                        textAlign={"right"}
-                                        aria-label="Link"
-                                        icon={<TbExternalLink />}
-                                        ml="2"
-                                        onClick={undefined}
-                                      />
-                                    </Link>
-                                  </Td>
-                                </Tr>
-                              ))}
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
+                      <Tabs variant="unstyled">
+                        <TabList mb="1em">
+                          <Tab _selected={{ fontWeight: "bold" }}>Compras Relacionadas</Tab>
+                          <Tab _selected={{ fontWeight: "bold" }}>Presença</Tab>
+                        </TabList>
+                        <TabIndicator mt="-10.5px" height="2px" bg="black" borderRadius="1px" />
+                        <TabPanels>
+                          <TabPanel>
+                            <TableContainer w={"full"}>
+                              <Table variant="striped" size="sm" colorScheme={"blackAlpha"}>
+                                <Thead>
+                                  <Tr>
+                                    <Th>Id</Th>
+                                    <Th>Valor</Th>
+                                    <Th>Status</Th>
+                                    <Th>Data Criação</Th>
+                                    <Th></Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
+                                  {purchases &&
+                                    purchases?.sort((a: any, b: any) => b.id - a.id).map((item: any) => (
+                                      <Tr key={item.id}>
+                                        <Td>{item.id}</Td>
+                                        <Td>{formatValue(+item.value)}</Td>
+                                        <Td>
+                                          {item.status == "pending"
+                                            ? "Pendente"
+                                            : item.status == "paid"
+                                              ? "Pago"
+                                              : "Cancelado"}
+                                        </Td>
+                                        <Td>{formatDate(new Date(item.creation_date))}</Td>
+                                        <Td>
+                                          <Link href={`/purchase/${item.id}`}>
+                                            <IconButton
+                                              variant="outline"
+                                              textAlign={"right"}
+                                              aria-label="Link"
+                                              icon={<TbExternalLink />}
+                                              ml="2"
+                                              onClick={undefined}
+                                            />
+                                          </Link>
+                                        </Td>
+                                      </Tr>
+                                    ))}
+                                </Tbody>
+                              </Table>
+                            </TableContainer>
+                          </TabPanel>
+                          <TabPanel>
+                            <TableContainer w={"full"}>
+                              <Table variant="striped" size="sm" colorScheme={"blackAlpha"}>
+                                <Thead>
+                                  <Tr>
+                                    <Th>Id</Th>
+                                    <Th>Data</Th>
+                                    <Th></Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
+                                  {presences &&
+                                    presences?.sort((a: any, b: any) => b.id - a.id).map((item: any) => (
+                                      <Tr key={item.id}>
+                                        <Td>{item.id}</Td>
+                                        <Td>{formatDate(new Date(item.presence_date))}</Td>
+                                        <Td>
+                                          <IconButton
+                                            variant="outline"
+                                            textAlign={"right"}
+                                            aria-label="Deletar item"
+                                            colorScheme="red"
+                                            icon={<FaTrash />}
+                                            ml="2"
+                                            onClick={() => {handleClickDeletePresence(item.id) }}
+                                          />
+                                        </Td>
+                                      </Tr>
+                                    ))}
+                                </Tbody>
+                              </Table>
+                            </TableContainer>
+                          </TabPanel>
+                        </TabPanels>
+                      </Tabs>
+                      {/* <FormLabel>Compras Relacionadas</FormLabel> */}
                     </FormControl>
                   </>
                 )}
@@ -462,10 +574,15 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
                     {id > 0 && <CustomButton callback={handleUpdate}>{"Continuar"}</CustomButton>}
                     <CustomButton callback={onOpen}>{id > 0 ? "Renovar" : "Continuar"}</CustomButton>
                     {id > 0 && (
+                      <CustomButton callback={onOpenPresence}>
+                        Presença
+                      </CustomButton>
+                    )}
+                    {id > 0 && (
                       <CustomButton callback={handleDelete} variant="outline" colorSchema="red">
                         Deletar
                       </CustomButton>
-                    )}
+                    )} 
                     <CustomButton variant="outline" colorSchema="blackAlpha" callback={handleReturn}>
                       Voltar
                     </CustomButton>
@@ -541,6 +658,34 @@ export default function Registration({ params: { id } }: RegistrationEdit) {
           </ModalBody>
           <ModalFooter>
             <CustomButton callback={id > 0 ? handleRenovate : handleCreate}>Confirmar</CustomButton>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+
+      <Modal isOpen={isOpenPresence} onClose={onClosePresence}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Adicionar Presença</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl mb={4}>
+              <FormLabel htmlFor="presence_date">Data</FormLabel>
+              <Input
+                type="date"
+                id="presence_date"
+                name="presence_date"
+                placeholder="Data da Presença"
+                value={presenceState?.presence_date}
+                onChange={(e) => {
+                  setPresenceState({ ...presenceState, presence_date: e.target.value });
+                }}
+              />
+            </FormControl>
+            
+          </ModalBody>
+          <ModalFooter>
+            <CustomButton callback={handlePresence}>Confirmar</CustomButton>
           </ModalFooter>
         </ModalContent>
       </Modal>

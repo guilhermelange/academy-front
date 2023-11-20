@@ -2,7 +2,6 @@
 
 import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from "@chakra-ui/react"
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
-import { formatDate, formatValue } from "../../../utils/viewUtils";
 import useSWR, { useSWRConfig } from "swr";
 import { api } from "@/common/service/api";
 import { useState } from "react";
@@ -67,7 +66,7 @@ export default function Students() {
                 </Tr>
               </Thead>
               <Tbody>
-                {currentData && currentData.map((student: any) => (
+                {currentData && currentData.sort((a: any, b: any) => b.id - a.id).map((student: any) => (
                   <Tr key={student.id}>
                     <Td>{student.id}</Td>
                     <Td>{student.name}</Td>

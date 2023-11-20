@@ -68,7 +68,7 @@ export default function Professional() {
                 </Tr>
               </Thead>
               <Tbody>
-                {currentData && currentData.map((profissional: any) => (
+                {currentData && currentData.sort((a: any, b: any) => b.id - a.id).map((profissional: any) => (
                   <Tr key={profissional.id}>
                     <Td>{profissional.id}</Td>
                     <Td>{profissional.name}</Td>

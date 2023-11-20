@@ -40,7 +40,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const response = await api.post("/auth", { email, password});
         const { token, user: loggedUser } = response.data;
 
-        console.log(loggedUser)
         setUser(loggedUser)
 
         setCookie(undefined, 'nextauth.token', token, {

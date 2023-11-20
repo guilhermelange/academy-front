@@ -64,7 +64,7 @@ export default function Product() {
                 </Tr>
               </Thead>
               <Tbody>
-                {currentData && currentData.map((activity: any) => (
+                {currentData && currentData.sort((a: any, b: any) => b.id - a.id).map((activity: any) => (
                   <Tr key={activity.id}>
                     <Td>{activity.id}</Td>
                     <Td>{activity.name}</Td>
