@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from "@chakra-ui/react"
+import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack } from "@chakra-ui/react"
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
 import { formatDate, formatValue } from "../../../utils/viewUtils";
 import useSWR, { useSWRConfig } from "swr";
@@ -43,14 +43,16 @@ export default function Product() {
           <Heading size="lg">
             Produtos
           </Heading>
-          <IconButton
-            variant="outline"
-            colorScheme="green"
-            aria-label="Add item"
-            icon={<FaPlus />}
-            ml="2"
-            onClick={handleNewProduct}
-          />
+          <Tooltip label="Novo">
+            <IconButton
+              variant="outline"
+              colorScheme="green"
+              aria-label="Add item"
+              icon={<FaPlus />}
+              ml="2"
+              onClick={handleNewProduct}
+            />
+          </Tooltip>
         </Stack>
 
         <VStack spacing={8} pt={4}>
@@ -75,22 +77,26 @@ export default function Product() {
                     <Td>{formatValue(Number.parseFloat(product.value))}</Td>
                     <Td>{product.type == 'bar' ? 'Bar' : 'Loja'}</Td>
                     <Td textAlign={'right'}>
-                      <IconButton
-                        variant="outline"
-                        colorScheme="blackAlpha"
-                        aria-label="Edit item"
-                        icon={<FaRegEdit />}
-                        ml="2"
-                        onClick={() => {handleEdit(product.id)}}
-                      />
-                      <IconButton
-                        variant="outline"
-                        colorScheme="red"
-                        aria-label="Remove item"
-                        icon={<FaTrash />}
-                        ml="2"
-                        onClick={() => {handleDelete(product.id)}}
-                      />
+                      <Tooltip label="Editar">
+                        <IconButton
+                          variant="outline"
+                          colorScheme="blackAlpha"
+                          aria-label="Edit item"
+                          icon={<FaRegEdit />}
+                          ml="2"
+                          onClick={() => { handleEdit(product.id) }}
+                        />
+                      </Tooltip>
+                      <Tooltip label="Remover">
+                        <IconButton
+                          variant="outline"
+                          colorScheme="red"
+                          aria-label="Remove item"
+                          icon={<FaTrash />}
+                          ml="2"
+                          onClick={() => { handleDelete(product.id) }}
+                        />
+                      </Tooltip>
                     </Td>
                   </Tr>
                 ))}

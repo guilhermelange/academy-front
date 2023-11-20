@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, VStack } from "@chakra-ui/react"
+import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack } from "@chakra-ui/react"
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
 import useSWR, { useSWRConfig } from "swr";
 import { api } from "@/common/service/api";
@@ -42,14 +42,16 @@ export default function Students() {
           <Heading size="lg">
             Alunos
           </Heading>
-          <IconButton
-            variant="outline"
-            colorScheme="green"
-            aria-label="Add item"
-            icon={<FaPlus />}
-            ml="2"
-            onClick={handleNewProduct}
-          />
+          <Tooltip label='Novo'>
+            <IconButton
+              variant="outline"
+              colorScheme="green"
+              aria-label="Add item"
+              icon={<FaPlus />}
+              ml="2"
+              onClick={handleNewProduct}
+            />
+          </Tooltip>
         </Stack>
 
         <VStack spacing={8} pt={4}>
@@ -74,22 +76,26 @@ export default function Students() {
                     <Td>{student.phone}</Td>
                     <Td>{student.status ? 'Ativo' : 'Inativo'}</Td>
                     <Td textAlign={'right'}>
-                      <IconButton
-                        variant="outline"
-                        colorScheme="blackAlpha"
-                        aria-label="Edit item"
-                        icon={<FaRegEdit />}
-                        ml="2"
-                        onClick={() => {handleEdit(student.id)}}
-                      />
-                      <IconButton
-                        variant="outline"
-                        colorScheme="red"
-                        aria-label="Remove item"
-                        icon={<FaTrash />}
-                        ml="2"
-                        onClick={() => {handleDelete(student.id)}}
-                      />
+                      <Tooltip label="Editar">
+                        <IconButton
+                          variant="outline"
+                          colorScheme="blackAlpha"
+                          aria-label="Edit item"
+                          icon={<FaRegEdit />}
+                          ml="2"
+                          onClick={() => { handleEdit(student.id) }}
+                        />
+                      </Tooltip>
+                      <Tooltip label="Remover">
+                        <IconButton
+                          variant="outline"
+                          colorScheme="red"
+                          aria-label="Remove item"
+                          icon={<FaTrash />}
+                          ml="2"
+                          onClick={() => { handleDelete(student.id) }}
+                        />
+                      </Tooltip>
                     </Td>
                   </Tr>
                 ))}

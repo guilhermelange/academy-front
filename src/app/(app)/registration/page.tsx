@@ -13,11 +13,13 @@ import {
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
-import { formatDate, formatTime, formatValue } from "../../../utils/viewUtils";
+import { FaTrash, FaRegEdit, FaPlus, FaCheck } from "react-icons/fa";
+import { formatDate, formatTime, formatValue, getCurrentDate } from "../../../utils/viewUtils";
 import useSWR, { useSWRConfig } from "swr";
 import { api } from "@/common/service/api";
 import { useState } from "react";
@@ -34,6 +36,7 @@ export default function Registration({ params: { userId } }: RegistrationList) {
   const page = useState(0);
   const router = useRouter();
   const { mutate } = useSWRConfig();
+  const toast = useToast();
 
   const idUser = userId ?? 0;
   const apiUrl = idUser > 0 ? `/registration?student_id=${idUser}` : "/registration";
@@ -46,6 +49,32 @@ export default function Registration({ params: { userId } }: RegistrationList) {
 
   const handleEdit = (id: any) => {
     router.push(`/registration/${id}`);
+  };
+
+  const handlePresence = (id: any) => {
+    api
+      .post(`/presence`, {
+        registration_id: id,
+        presence_date: getCurrentDate()
+      })
+      .then((e) => {
+        toast({
+          title: "Presença adicionada com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+        
+      })
+      .catch((e) => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      });
   };
 
   const handleDelete = async (id: any) => {
@@ -62,14 +91,16 @@ export default function Registration({ params: { userId } }: RegistrationList) {
       <Box textAlign="center" fontSize="xl">
         <Stack direction={"row"} verticalAlign={"center"} w={"full"} justifyContent={"space-between"}>
           <Heading size="lg">Matrículas</Heading>
-          <IconButton
-            variant="outline"
-            colorScheme="green"
-            aria-label="Add item"
-            icon={<FaPlus />}
-            ml="2"
-            onClick={handleNew}
-          />
+          <Tooltip label='Novo'>
+            <IconButton
+              variant="outline"
+              colorScheme="green"
+              aria-label="Add item"
+              icon={<FaPlus />}
+              ml="2"
+              onClick={handleNew}
+            />
+          </Tooltip>
         </Stack>
 
         <VStack spacing={8} pt={4}>
@@ -111,26 +142,42 @@ export default function Registration({ params: { userId } }: RegistrationList) {
                         {formatDate(new Date(registration.expiration))}
                       </Td>
                       <Td textAlign={"right"}>
-                        <IconButton
-                          variant="outline"
-                          colorScheme="blackAlpha"
-                          aria-label="Edit item"
-                          icon={<FaRegEdit />}
-                          ml="2"
-                          onClick={() => {
-                            handleEdit(registration.id);
-                          }}
-                        />
-                        <IconButton
-                          variant="outline"
-                          colorScheme="red"
-                          aria-label="Remove item"
-                          icon={<FaTrash />}
-                          ml="2"
-                          onClick={() => {
-                            handleDelete(registration.id);
-                          }}
-                        />
+                        <Tooltip label='Adicionar Presença'>
+                          <IconButton
+                            variant="outline"
+                            colorScheme="blackAlpha"
+                            aria-label="Presença"
+                            icon={<FaCheck />}
+                            ml="2"
+                            onClick={() => {
+                              handlePresence(registration.id);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip label='Editar'>
+                          <IconButton
+                            variant="outline"
+                            colorScheme="blackAlpha"
+                            aria-label="Edit item"
+                            icon={<FaRegEdit />}
+                            ml="2"
+                            onClick={() => {
+                              handleEdit(registration.id);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip label='Remover'>
+                          <IconButton
+                            variant="outline"
+                            colorScheme="red"
+                            aria-label="Remove item"
+                            icon={<FaTrash />}
+                            ml="2"
+                            onClick={() => {
+                              handleDelete(registration.id);
+                            }}
+                          />
+                        </Tooltip>
                       </Td>
                     </Tr>
                   ))}
