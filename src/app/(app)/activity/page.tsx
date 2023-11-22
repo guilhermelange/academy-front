@@ -37,6 +37,7 @@ export default function Product() {
           duration: 2000,
           isClosable: true,
         });
+        mutate("/activity");
       })
       .catch(e => {
         toast({
@@ -47,7 +48,6 @@ export default function Product() {
           isClosable: true,
         });
       });
-    mutate("/activity");
   }
 
   const handleNew = async () => {

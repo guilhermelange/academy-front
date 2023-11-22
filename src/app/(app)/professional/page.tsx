@@ -39,6 +39,7 @@ export default function Professional() {
           duration: 2000,
           isClosable: true,
         });
+        mutate("/professional");
       })
       .catch(e => {
         toast({
@@ -48,8 +49,7 @@ export default function Professional() {
           description: e.response?.data?.message || "Erro interno",
           isClosable: true,
         });
-      });
-    mutate("/professional");
+      }); 
   }
 
   const handleNewProduct = async () => {

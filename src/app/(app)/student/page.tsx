@@ -36,6 +36,7 @@ export default function Students() {
           duration: 2000,
           isClosable: true,
         });
+        mutate("/student");
       })
       .catch(e => {
         toast({
@@ -46,7 +47,6 @@ export default function Students() {
           isClosable: true,
         });
       });
-    mutate("/student");
   }
 
   const handleNewProduct = async () => {

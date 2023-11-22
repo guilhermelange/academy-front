@@ -86,6 +86,7 @@ export default function Registration({ params: { userId } }: RegistrationList) {
           duration: 2000,
           isClosable: true,
         });
+        mutate("/registration");
       })
       .catch(e => {
         toast({
@@ -96,7 +97,6 @@ export default function Registration({ params: { userId } }: RegistrationList) {
           isClosable: true,
         });
       });
-    mutate("/registration");
   };
 
   const handleNew = async () => {
