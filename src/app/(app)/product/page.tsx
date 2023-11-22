@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack } from "@chakra-ui/react"
+import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack, useToast } from "@chakra-ui/react"
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
 import { formatDate, formatValue } from "../../../utils/viewUtils";
 import useSWR, { useSWRConfig } from "swr";
@@ -15,6 +15,7 @@ export default function Product() {
   const page = useState(0);
   const router = useRouter();
   const { mutate } = useSWRConfig()
+  const toast = useToast();
 
   const { data: products, error, isLoading }: swrResponse = useSWR("/product", api);
 
@@ -28,7 +29,24 @@ export default function Product() {
   }
 
   const handleDelete = async (id: any) => {
-    await api.delete(`/product/${id}`);
+    api.delete(`/product/${id}`)
+      .then(item => {
+        toast({
+          title: "Produto deletado com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch(e => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      });
     mutate("/product");
   }
 

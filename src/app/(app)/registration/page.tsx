@@ -78,7 +78,24 @@ export default function Registration({ params: { userId } }: RegistrationList) {
   };
 
   const handleDelete = async (id: any) => {
-    await api.delete(`/registration/${id}`);
+    api.delete(`/registration/${id}`)
+      .then(item => {
+        toast({
+          title: "Matrícula deletada com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch(e => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      });
     mutate("/registration");
   };
 

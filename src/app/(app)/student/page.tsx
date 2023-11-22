@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack } from "@chakra-ui/react"
+import { Box, Container, Heading, IconButton, Skeleton, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tooltip, Tr, VStack, useToast } from "@chakra-ui/react"
 import { FaTrash, FaRegEdit, FaPlus } from "react-icons/fa";
 import useSWR, { useSWRConfig } from "swr";
 import { api } from "@/common/service/api";
@@ -14,6 +14,7 @@ export default function Students() {
   const page = useState(0);
   const router = useRouter();
   const { mutate } = useSWRConfig()
+  const toast = useToast();
 
   const { data: students, error, isLoading }: swrResponse = useSWR("/student", api);
 
@@ -27,7 +28,24 @@ export default function Students() {
   }
 
   const handleDelete = async (id: any) => {
-    await api.delete(`/student/${id}`);
+    api.delete(`/student/${id}`)
+      .then(data => {
+        toast({
+          title: "Aluno deletado com sucesso!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch(e => {
+        toast({
+          title: "Algo deu errado!",
+          status: "error",
+          duration: 2000,
+          description: e.response?.data?.message || "Erro interno",
+          isClosable: true,
+        });
+      });
     mutate("/student");
   }
 
