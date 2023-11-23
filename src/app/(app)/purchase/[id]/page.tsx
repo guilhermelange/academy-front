@@ -505,7 +505,7 @@ export default function Purchase({ params: { id } }: PurchaseEdit) {
                         </Thead>
                         <Tbody>
                           {installments &&
-                            installments?.map((installment: any) => (
+                            installments?.sort((a: any, b: any) => a.id - b.id).map((installment: any) => (
                               <Tr key={installment.id}>
                                 <Td>{formatDate(new Date(installment.due_date))}</Td>
                                 <Td>{formatValue(+installment.value)}</Td>

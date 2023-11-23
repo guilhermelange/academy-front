@@ -84,6 +84,7 @@ export default function Product() {
                   <Th>Tipo</Th>
                   <Th>Data</Th>
                   <Th>Valor</Th>
+                  <Th>Valor Pago</Th>
                   <Th>Status</Th>
                   <Th></Th>
                 </Tr>
@@ -97,6 +98,7 @@ export default function Product() {
                     <Td>{purchase.type == 'registration' ? 'Matrícula' : purchase.type == 'bar' ? 'Bar' : 'Loja'}</Td>
                     <Td>{formatDate(new Date(purchase.creation_date))}</Td>
                     <Td>{formatValue(+purchase.value)}</Td>
+                    <Td>{formatValue(+purchase.paid_value)}</Td>
                     <Td>{purchase.status == 'pending' ? 'Pendente' : purchase.status == 'paid' ? 'Pago' : 'Cancelado'}</Td>
                     <Td textAlign={'right'}>
                       <Tooltip label="Editar">
